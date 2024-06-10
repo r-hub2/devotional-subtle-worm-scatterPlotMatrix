@@ -1,0 +1,5 @@
+dependencies:
+  - name: scatterPlotMatrix
+    version: 0.3
+    src: htmlwidgets/lib/scatterPlotMatrix
+    stylesheet: scatterPlotMatrix.css

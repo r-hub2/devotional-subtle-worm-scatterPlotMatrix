@@ -1,0 +1,194 @@
+---
+title: "Introduction to 'scatterPlotMatrix'"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to 'scatterPlotMatrix'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 7
+)
+```
+
+```{r setup}
+library(scatterPlotMatrix)
+```
+
+## Basic usage (dataset uses `factor` type)
+
+```{r}
+scatterPlotMatrix(iris)
+```
+
+'Species' column is of factor type and has box representation for its categories.
+
+## `slidersPosition` argument
+
+```{r}
+scatterPlotMatrix(iris, slidersPosition = list(
+  dimCount = 3, # Number of columns to draw
+  xStartingDimIndex = 2, # Index of first drawn column horizontally
+  yStartingDimIndex = 2 # Index of first drawn column vertically
+))
+```
+
+Set initial position of sliders, specifying which columns intervals are visible.
+Here, visible columns starts at second column in x direction, second column in y direction, and three columns are represented.
+
+## `zAxisDim` argument (referenced column is categorical)
+
+```{r}
+scatterPlotMatrix(iris, zAxisDim = "Species")
+```
+
+Each point has a color depending of its 'Species' value.
+
+## `categoricalCS` argument
+
+```{r}
+scatterPlotMatrix(iris, zAxisDim = "Species", categoricalCS = "Set1")
+```
+
+Colors used for categories are not the same as previously (supported values: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`).
+
+## `zAxisDim` argument (referenced column is continuous)
+
+```{r}
+scatterPlotMatrix(iris, zAxisDim = "Sepal.Length")
+```
+
+Each point has a color depending of its `Sepal.Length` value.
+
+## `continuousCS` argument
+
+```{r}
+scatterPlotMatrix(iris, zAxisDim = "Sepal.Length", continuousCS = "YlOrRd")
+```
+
+Colors used for points are not the same as previously (supported values: `Blues`, `RdBu`, `YlGnBu`, `YlOrRd`, `Reds`).
+
+## `corrPlotType` argument
+
+Supported values: `Empty`, `Circles`, `Text`, `AbsText`
+
+```{r}
+scatterPlotMatrix(iris, corrPlotType = "Text")
+```
+
+Correlation plots use simple texts instead of circle tree maps as previously;
+Value of correlations is used to attribute the color, using a color scale with a domain [-1; 1] and the palette `RdBu`.
+
+```{r}
+scatterPlotMatrix(iris, corrPlotType = "AbsText")
+```
+
+Absolute value of correlations is used to attribute the color, using a color scale with a domain [0; 1] and palette 'Blues'.
+
+## Basic usage (dataset doesn't use `factor` type)
+
+```{r}
+scatterPlotMatrix(mtcars)
+```
+
+Several columns are of numerical type but should be of factor type (for example `cyl`).
+
+## `categorical` argument
+
+```{r}
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+scatterPlotMatrix(mtcars, categorical = categorical, zAxisDim = "cyl")
+```
+
+`cyl` and four last columns have a box representation for categories (use top slider to see the last three columns).
+
+## `distribType` argument
+
+```{r}
+scatterPlotMatrix(iris, zAxisDim = "Species", distribType = 1)
+```
+
+Distribution plots are of type 'density plot' (instead of histogram).
+
+## `regressionType` argument
+
+```{r}
+scatterPlotMatrix(iris, zAxisDim = "Species", regressionType = 1)
+```
+
+Add linear regression plots.
+
+## `cutoffs` argument
+
+```{r}
+cutoffs <- list(
+  list(
+    xDim = "Sepal.Length",
+    yDim = "Species",
+    xyCutoffs = list(
+      list(c(4, 8), c(-0.1, 0.1)),
+      list(c(4, 8), c(1.9, 2.1)))
+    )
+)
+scatterPlotMatrix(iris, zAxisDim = "Species", cutoffs = cutoffs)
+```
+
+Traces which are not kept by cutoffs are greyed; only kept traces are used for histograms.
+
+## `rotateTitle` argument
+
+```{r}
+scatterPlotMatrix(iris, zAxisDim = "Species", rotateTitle = TRUE)
+```
+
+Column names are rotated (can be useful for long column names).
+
+## `columnLabels` argument
+
+```{r}
+columnLabels <- gsub("\\.", "<br>", colnames(iris))
+scatterPlotMatrix(iris, zAxisDim = "Species", columnLabels = columnLabels)
+```
+
+Given names are displayed in place of column names found in dataset; `<br>` is used to insert line breaks.
+
+## `cssRules` argument
+
+```{r}
+scatterPlotMatrix(iris, cssRules = list(
+    ".jitterZone" = "fill: pink", # Set background of plot to pink
+    ".tick text" = c("fill: red", "font-size: 1.8em") # Set text of axes ticks red and greater
+))
+```
+
+Apply CSS to the plot. CSS is a simple way to describe how elements on a web page should be displayed (position, colour, size, etc.). 
+You can learn the basics at [W3Schools](https://www.w3schools.com/css/).
+You can learn how to examine and edit css at [MDN Web Docs](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/open_the_inspector/index.html) for Firefox or [Chrome devtools](https://developer.chrome.com/docs/devtools/css/) for Chrome.
+
+## `plotProperties` argument
+
+```{r}
+scatterPlotMatrix(iris, plotProperties = list(
+  noCatColor = "DarkCyan", # Color used when categories coloring is not applied
+  point = list(
+    alpha = 0.3, # Opacity value used for points
+    radius = 4 # Radius used to draw points as circles
+  )
+))
+```
+
+Adjust some properties which can not be set through CSS (mainly size, color and opacity of points).
+Here, points of plot are customised: two times greater, with opacity reduced from 0.5 to 0.3, and a `DarkCyan` color.
+
+## `controlWidgets` argument
+
+```{r}
+scatterPlotMatrix(iris, controlWidgets = TRUE)
+```
+
+Some widgets are available to control the plot.
